@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_list/repository/repository.dart';
 import 'package:todo_list/widgets/todo_list_item.dart';
 
 import '../models/todo.dart';
@@ -12,10 +13,21 @@ class ListaDeTarefas extends StatefulWidget {
 
 class ListaDeTarefasState extends State<ListaDeTarefas> {
   final TextEditingController todoController = TextEditingController();
+  final TodoRepository todoRepository = TodoRepository();
 
   List<Todo> todos = [];
   Todo? deletedTodo;
   int? deletedTodoPosition;
+
+  @override
+  void initState() {
+    super.initState();
+    todoRepository.getTodoList().then((value) {
+      setState(() {
+        todos = value;
+      });
+    });
+  }
 
   //List <String> Contratos = [];
   @override
@@ -54,6 +66,7 @@ class ListaDeTarefasState extends State<ListaDeTarefas> {
                           todos.add(newTodo);
                         });
                         todoController.clear();
+                        todoRepository.saveTodoList(todos);
                       },
                       style: ElevatedButton.styleFrom(
                           primary: const Color(0xFFDF101A),
